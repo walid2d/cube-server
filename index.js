@@ -8,5 +8,7 @@ app.use(express.json());
 app.use(cors());
 //routes
 app.route("/stream/new").post(controller.createStream);
+app.route("/stream/all").get(controller.getStreams);
+app.route("/stream/:id").get(controller.getStreamById);
 //listen
 app.listen(PORT, () => console.log(`App running on port ${PORT}`));
