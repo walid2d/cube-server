@@ -49,4 +49,27 @@ const createStream = (req, res) => {
     });
   });
 };
-module.exports = { createStream, getStreams, getStreamById };
+const editStream = (req, res) => {
+  console.log(req.body);
+  const streamData = data;
+  const streamId = req.params.id;
+  const lastEdited = new Date().toLocaleDateString();
+  let editedStream = streamData.find((current) => current.id === streamId);
+  console.log(editedStream);
+  if (editedStream) {
+    editedStream.lastEdited = lastEdited;
+    editedStream.title = req.body.title;
+    editedStream.description = req.body.description;
+    fs.writeFile("./data/streams.json", JSON.stringify(data), () => {
+      res.send({
+        status: "Edit Successful!",
+      });
+    });
+  } else {
+    res.send({
+      status: "Error!",
+    });
+  }
+};
+
+module.exports = { createStream, getStreams, getStreamById, editStream };

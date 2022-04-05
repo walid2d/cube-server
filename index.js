@@ -10,5 +10,6 @@ app.use(cors());
 app.route("/stream/new").post(controller.createStream);
 app.route("/stream/all").get(controller.getStreams);
 app.route("/stream/:id").get(controller.getStreamById);
+app.route("/stream/edit/:id").put(controller.editStream);
 //listen
 app.listen(PORT, () => console.log(`App running on port ${PORT}`));
