@@ -3,7 +3,7 @@ const { v4: uuidv4 } = require("uuid");
 
 const data = JSON.parse(fs.readFileSync("./data/streams.json"));
 
-getStreams = (req, res) => {
+const getStreams = (req, res) => {
   fs.readFile("./data/streams.json", "utf-8", (err, data) => {
     const allData = JSON.parse(data);
     if (err) {
@@ -71,5 +71,23 @@ const editStream = (req, res) => {
     });
   }
 };
+const deleteStream = (req, res) => {
+  fs.readFile("./data/streams.json", "utf8", (err, data) => {
+    const allStreams = JSON.parse(data);
+    const newData = allStreams.filter((stream) => stream.id !== req.params.id);
+    fs.writeFile("./data/streams.json", JSON.stringify(newData), () => {
+      res.send({
+        message: "Stream Deleted",
+        data: newData,
+      });
+    });
+  });
+};
 
-module.exports = { createStream, getStreams, getStreamById, editStream };
+module.exports = {
+  createStream,
+  getStreams,
+  getStreamById,
+  editStream,
+  deleteStream,
+};
