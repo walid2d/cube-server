@@ -32,7 +32,6 @@ const getStreams = (req, res) => {
     if (err) {
       res.send("error reading data");
     } else {
-      console.log(allData);
       res.send(allData);
     }
   });
@@ -52,8 +51,6 @@ const getStreamById = function (req, res) {
 };
 
 const createStream = (req, res) => {
-  console.log(req.body);
-  console.log(req.body.description);
   const current = new Date().toLocaleDateString();
   const streamData = data;
   const userInput = {
