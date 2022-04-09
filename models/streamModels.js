@@ -1,9 +1,32 @@
 const fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
-
+const { faker } = require("@faker-js/faker");
 const data = JSON.parse(fs.readFileSync("./data/streams.json"));
-
-getStreams = (req, res) => {
+const generateData = () => {
+  let allData = data;
+  if (allData.length < 40) {
+    for (let i = allData.length; i <= 50; i++) {
+      const randomDes = faker.lorem.paragraph();
+      const randomName = faker.name.firstName();
+      const randomPfp = faker.image.avatar();
+      const randomDate = faker.date.past();
+      const randomTitle = faker.hacker.phrase();
+      const fakeInput = {
+        id: uuidv4(),
+        userid: uuidv4(),
+        userpfp: randomPfp,
+        timestamp: randomDate,
+        username: randomName,
+        title: randomTitle,
+        description: randomDes,
+      };
+      allData.push(fakeInput);
+    }
+    fs.writeFileSync("./data/streams.json", JSON.stringify(allData), () => {});
+  }
+};
+const getStreams = (req, res) => {
+  generateData();
   fs.readFile("./data/streams.json", "utf-8", (err, data) => {
     const allData = JSON.parse(data);
     if (err) {
@@ -28,8 +51,6 @@ const getStreamById = function (req, res) {
 };
 
 const createStream = (req, res) => {
-  console.log(req.body);
-  console.log(req.body.description);
   const current = new Date().toLocaleDateString();
   const streamData = data;
   const userInput = {
@@ -40,7 +61,6 @@ const createStream = (req, res) => {
     title: req.body.title,
     description: req.body.description,
   };
-  console.log(userInput);
   streamData.push(userInput);
   fs.writeFile("./data/streams.json", JSON.stringify(streamData), () => {
     res.send({
@@ -71,5 +91,23 @@ const editStream = (req, res) => {
     });
   }
 };
+const deleteStream = (req, res) => {
+  fs.readFile("./data/streams.json", "utf8", (err, data) => {
+    const allStreams = JSON.parse(data);
+    const newData = allStreams.filter((stream) => stream.id !== req.params.id);
+    fs.writeFile("./data/streams.json", JSON.stringify(newData), () => {
+      res.send({
+        message: "Stream Deleted",
+        data: newData,
+      });
+    });
+  });
+};
 
-module.exports = { createStream, getStreams, getStreamById, editStream };
+module.exports = {
+  createStream,
+  getStreams,
+  getStreamById,
+  editStream,
+  deleteStream,
+};
